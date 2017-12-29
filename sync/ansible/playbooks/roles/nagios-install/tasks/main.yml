@@ -1,0 +1,40 @@
+---
+- name: Install NAGIOS
+  package:
+    name: httpd,nagios,nagios-plugins-all,nagios-plugins-nrpe
+    state: present
+
+- name: Set password for {{ nagios_admin_username }}
+  htpasswd:
+    path: /etc/nagios/passwd
+    name: "{{ nagios_admin_username }}"
+    password: "{{ nagios_admin_password }}"
+
+- name: Copy docker plugin
+  copy: 
+    src=/vagrant/files/check_docker_container.sh
+    dest=/usr/lib64/nagios/plugins/check_docker_container.sh
+
+- name: Turn on execute permission for docker plugin
+  file: 
+    path=/usr/lib64/nagios/plugins/check_docker_container.sh
+    mode="a+x"
+
+- name: Copy some nice logos
+  copy: 
+    src={{ item }} 
+    dest=/usr/share/nagios/html/images/logos/
+  with_fileglob:
+    - /vagrant/files/nagios/logos/*.png
+
+- name: Copy localhost.cfg
+  copy: 
+    src=/vagrant/files/nagios/localhost.cfg
+    dest=/etc/nagios/objects/localhost.cfg
+
+- name: Copy additional config files
+  copy: 
+    src={{ item }} 
+    dest=/etc/nagios/conf.d/
+  with_fileglob:
+    - /vagrant/files/nagios/conf.d/*.cfg 

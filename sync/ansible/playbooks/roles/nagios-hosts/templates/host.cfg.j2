@@ -1,0 +1,7 @@
+# HOST DEFINITION
+define host {
+    use {{ item.host_type }}  
+    host_name {{ item.host_name }}
+    alias {{ item.host_alias }}
+    address {{ item.host_address }}
+}

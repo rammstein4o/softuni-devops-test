@@ -1,0 +1,5 @@
+hosts_list:
+  - host_type: nagios-server
+    host_name: nagios.example.com
+    host_alias: NAGIOS server
+    host_address: 127.0.0.1

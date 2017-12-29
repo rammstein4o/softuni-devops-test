@@ -1,0 +1,12 @@
+---
+- name: Ensure NAGIOS is started and enabled at boot
+  service:
+    name: nagios
+    state: started
+    enabled: yes
+
+- name: Ensure Apache is started and enabled at boot
+  service:
+    name: httpd
+    state: started
+    enabled: yes

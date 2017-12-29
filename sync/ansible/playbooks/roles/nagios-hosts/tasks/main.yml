@@ -1,0 +1,6 @@
+---
+- name: Create NAGIOS host config files
+  template:
+    src: host.cfg.j2
+    dest: /etc/nagios/conf.d/{{ item.host_name }}.cfg
+  with_items: "{{ hosts_list }}"

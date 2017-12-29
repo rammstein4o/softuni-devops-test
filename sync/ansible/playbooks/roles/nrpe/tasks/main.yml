@@ -1,0 +1,56 @@
+---
+- name: Install NRPE
+  package:
+    name: nrpe,nagios-plugins-nrpe,nagios-plugins-all
+    state: present
+
+- name: Copy docker plugin
+  copy: 
+    src=/vagrant/files/check_docker_container.sh
+    dest=/usr/lib64/nagios/plugins/check_docker_container.sh
+
+- name: Turn on execute permission for docker plugin
+  file: 
+    path=/usr/lib64/nagios/plugins/check_docker_container.sh
+    mode="a+x"
+
+- name: Firewall | Open ({{ server_port }}/tcp) port
+  firewalld:
+    port: "{{ server_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Update nrpe.cfg
+  template:
+    src: nrpe.cfg.j2
+    dest: /etc/nagios/nrpe.cfg
+    force: yes
+
+- name: Add nrpe to sudoers.d
+  copy:
+    src=/vagrant/files/nrpe/nrpe.sudo
+    dest=/etc/sudoers.d/nrpe
+
+- name: Add nagios to sudoers.d
+  copy:
+    src=/vagrant/files/nrpe/nagios.sudo
+    dest=/etc/sudoers.d/nagios
+
+- name: Add nrpe user to docker group
+  user:
+    name: nrpe
+    groups: docker
+    append: yes
+
+- name: Add nagios user to docker group
+  user:
+    name: nagios
+    groups: docker
+    append: yes
+
+- name: Ensure NRPE is started and enabled at boot
+  service:
+    name: nrpe
+    state: started
+    enabled: yes

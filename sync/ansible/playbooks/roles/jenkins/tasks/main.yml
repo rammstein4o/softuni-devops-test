@@ -1,0 +1,126 @@
+---
+- name: Add Jenkins GPG key
+  rpm_key:
+    key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+    state: present
+
+- name: Add Jenkins repository
+  get_url:
+    url: "https://pkg.jenkins.io/redhat-stable/jenkins.repo"
+    dest: '/etc/yum.repos.d/jenkins.repo'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install Jenkins
+  package:
+    name: jenkins,graphviz,monit,crontabs,libxml2,libxml2-devel,libxslt-devel,python-jenkins
+    state: present
+
+- name: Update Jenkins config
+  template: 
+    src:   config.xml.j2
+    dest:  "{{ jenkins_home }}/config.xml"
+    owner: "{{ jenkins_process_user }}" 
+    group: "{{ jenkins_process_group }}" 
+    mode:  0644
+
+#~ - name: Turn on execute permission for jenkins-create-user.sh
+  #~ file: 
+    #~ path=/vagrant/jenkins-create-user.sh
+    #~ mode="a+x"
+
+#~ - name: Turn on execute permission for jenkins-add-node.sh
+  #~ file: 
+    #~ path=/vagrant/jenkins-add-node.sh
+    #~ mode="a+x"
+
+#~ - name: Turn on execute permission for jenkins-add-credentials.sh
+  #~ file: 
+    #~ path=/vagrant/jenkins-add-credentials.sh
+    #~ mode="a+x"
+
+- name: Create user {{ jenkins_admin_username }}
+  script: /vagrant/files/jenkins/jenkins-create-user.sh {{ jenkins_admin_username }} {{ jenkins_admin_password }} {{ jenkins_home }} {{ jenkins_process_user }} {{ jenkins_process_group }}
+
+- name: Create jenkins init script
+  template: 
+    src:   jenkins.sysconfig.j2
+    dest:  /etc/sysconfig/jenkins
+    owner: root 
+    group: root 
+    mode:  0644
+
+- name: Ensure Jenkins is started and enabled at boot
+  service:
+    name: jenkins
+    state: started
+    enabled: yes
+
+- name: Wait for jenkins to be available
+  uri:
+    url:  "http://localhost:8080/login"
+  register: resp
+  until: resp.status|default(false) == 200
+  retries: 10
+  delay: 10
+
+- name: Install plugins
+  jenkins_plugin:
+    name: "{{ item.key }}"
+    with_dependencies: yes
+    params:
+      timeout: 90.0
+      url_username: "{{ jenkins_admin_username }}"
+      url: http://localhost:8080
+    url_password: "{{ jenkins_admin_password }}"
+  register: plugins_installed
+  with_dict: "{{ my_jenkins_plugins }}"
+  
+- name: Initiate the fact
+  set_fact:
+    restart_required: no
+
+- name: Check if restart is required
+  set_fact:
+    restart_required: yes
+  when: item.changed
+  with_items: "{{ plugins_installed.results }}"
+
+- name: Restart Jenkins if required
+  service:
+    name: jenkins
+    state: restarted
+  when: restart_required
+
+- name: Reset the fact
+  set_fact:
+    restart_required: no
+  when: restart_required
+  
+- name: Wait for jenkins to be available
+  uri:
+    url:  "http://localhost:8080/login"
+  register: resp
+  until: resp.status|default(false) == 200
+  retries: 10
+  delay: 10
+  when: restart_required
+
+- name: Get the jenkins-cli jarfile from the Jenkins server.
+  get_url:
+    url: "http://localhost:8080/jnlpJars/jenkins-cli.jar"
+    dest: "{{ jenkins_jar_location }}"
+  register: jarfile_get
+  until: "'OK' in jarfile_get.msg or 'file already exists' in jarfile_get.msg"
+  retries: 5
+  delay: 10
+  check_mode: no
+
+- name: Create Jenkins job
+  jenkins_job:
+    config: "{{ lookup('template', 'templates/job.xml.j2') }}"
+    name: Docker-GitHub-SoftUni
+    user: "{{ jenkins_admin_username }}"
+    password: "{{ jenkins_admin_password }}"
+    url: http://localhost:8080

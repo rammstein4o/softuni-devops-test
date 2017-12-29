@@ -1,0 +1,7 @@
+---
+- name: Firewall | Open service {{ service }}
+  firewalld:
+    service: "{{ service }}"
+    permanent: true
+    state: enabled
+    immediate: true

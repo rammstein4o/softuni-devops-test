@@ -1,0 +1,11 @@
+---
+- hosts: docker
+  become: true
+  roles:
+    - firewall
+    - { role: firewall-open-service, service: http }
+    - git
+    - docker
+    - nrpe
+    - java
+    #~ - reboot

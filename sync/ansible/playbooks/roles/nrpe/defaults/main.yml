@@ -1,0 +1,2 @@
+server_port: 5666
+allowed_hosts: 127.0.0.1,::1

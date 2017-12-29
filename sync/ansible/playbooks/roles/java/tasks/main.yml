@@ -1,0 +1,11 @@
+---
+- name: Install Java JDK
+  package:
+    name: java-1.8.0-openjdk
+    state: present
+
+- name: Set JAVA_HOME and JRE_HOME
+  template:
+    src: java_home.sh.j2
+    dest: /etc/profile.d/java_home.sh
+    mode: 0644

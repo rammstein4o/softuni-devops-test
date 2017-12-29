@@ -1,0 +1,13 @@
+---
+- name: reboot the server
+  shell: sleep 2 && shutdown -r now
+  async: 1
+  poll: 0
+
+- name: Wait for server come back
+  wait_for: >
+       host={{ inventory_hostname }}
+       port=22
+       delay=15
+       timeout=600
+  delegate_to: localhost

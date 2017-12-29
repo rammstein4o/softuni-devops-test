@@ -1,0 +1,6 @@
+---
+- name: Create NAGIOS hostgroup config files
+  template:
+    src: hostgroup.cfg.j2
+    dest: /etc/nagios/conf.d/hostgroup-{{ item.group_name }}.cfg
+  with_items: "{{ groups_list }}"

@@ -1,0 +1,6 @@
+---
+- name: Ensure firewalld is started and enabled at boot
+  service:
+    name: firewalld
+    state: started
+    enabled: yes

@@ -1,0 +1,4 @@
+groups_list:
+  - group_name: local
+    group_alias: Local Servers
+    group_members: localhost

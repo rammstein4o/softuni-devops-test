@@ -1,0 +1,60 @@
+{
+    "nrpe": {
+        "allowedHosts": "127.0.0.1,::1,192.168.7.0/24",
+        "port": 5666
+    },
+    "ansible": {
+        "box": "geerlingguy/centos7",
+        "ip": "192.168.7.100",
+        "hostname": "ansible.sulab.local",
+        "folder": "sync/ansible/",
+        "memory": 1024,
+        "cpus": 1
+    },
+    "jenkins": {
+        "box": "geerlingguy/centos7",
+        "ip": "192.168.7.101",
+        "hostname": "jenkins.sulab.local",
+        "folder": "sync/jenkins/",
+        "memory": 1024,
+        "cpus": 1,
+        "adminUsername": "admin",
+        "adminPassword": "Password1",
+        "portForwarding": [
+            {
+                "guest": "8080",
+                "host": "8080"
+            }
+        ]
+    },
+    "nagios": {
+        "box": "geerlingguy/centos7",
+        "ip": "192.168.7.102",
+        "hostname": "nagios.sulab.local",
+        "folder": "sync/nagios/",
+        "memory": 1024,
+        "cpus": 1,
+        "adminUsername": "nagiosadmin",
+        "adminPassword": "Password1",
+        "portForwarding": [
+            {
+                "guest": "80",
+                "host": "8081"
+            }
+        ]
+    },
+    "docker": {
+        "box": "geerlingguy/centos7",
+        "ip": "192.168.7.103",
+        "hostname": "docker.sulab.local",
+        "folder": "sync/docker/",
+        "memory": 1024,
+        "cpus": 1,
+        "portForwarding": [
+            {
+                "guest": "80",
+                "host": "8082"
+            }
+        ]
+    }
+}

@@ -1,0 +1,6 @@
+# HOSTGROUP DEFINITION
+define hostgroup {
+    hostgroup_name {{ item.group_name }}-servers
+    alias {{ item.group_alias }}
+    members {{ item.group_members }}
+}

@@ -1,0 +1,9 @@
+jenkins_home: /var/lib/jenkins
+jenkins_admin_username: admin
+jenkins_admin_password: admin
+jenkins_process_user: jenkins
+jenkins_process_group: jenkins
+jenkins_jar_location: /opt/jenkins-cli.jar
+jenkins_java_args:
+  - "-Djava.awt.headless=true"
+  - "-Djenkins.install.runSetupWizard=false"

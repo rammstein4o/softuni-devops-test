@@ -1,0 +1,10 @@
+---
+- hosts: nagios
+  become: true
+  roles:
+    - firewall
+    - { role: firewall-open-service, service: http }
+    - nagios-install
+    - nagios-hosts
+    - nagios-host-groups
+    - nagios-start
