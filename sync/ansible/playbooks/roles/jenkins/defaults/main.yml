@@ -9,11 +9,7 @@ jenkins_java_args:
   - "-Djava.awt.headless=true"
   - "-Djenkins.install.runSetupWizard=false"
 jenkins_plugins:
-  build-pipeline-plugin:
-    enabled: yes
-  ssh:
-    enabled: yes
-  log-parser:
-    enabled: yes
-  template-project:
-    enabled: yes
+  - build-pipeline-plugin
+  - ssh
+  - log-parser
+  - template-project

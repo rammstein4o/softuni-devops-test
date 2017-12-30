@@ -208,20 +208,13 @@ jenkins_java_args:
   - "-Djava.awt.headless=true"
   - "-Djenkins.install.runSetupWizard=false"
 jenkins_plugins:
-  build-pipeline-plugin:
-    enabled: yes
-  ssh:
-    enabled: yes
-  log-parser:
-    enabled: yes
-  template-project:
-    enabled: yes
-  ssh-slaves:
-    enabled: yes
-  github:
-    enabled: yes
-  docker-workflow:
-    enabled: yes
+  - build-pipeline-plugin
+  - ssh
+  - log-parser
+  - template-project
+  - ssh-slaves
+  - github
+  - docker-workflow
 
 EOF
 

@@ -30,7 +30,12 @@
    <disabled>false</disabled>
    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-   <triggers />
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec><![CDATA[H/2 * * * *]]></spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
    <concurrentBuild>false</concurrentBuild>
    <customWorkspace><![CDATA[/vagrant/www-dynamic]]></customWorkspace>
    <builders>
@@ -48,7 +53,7 @@ docker container run -d -p 80:80 --name dob-http -v /vagrant/www-dynamic/site:/v
       </hudson.tasks.Shell>
       <hudson.tasks.Shell>
          <command><![CDATA[docker container rm -f dob-mysql || true
-docker container run -d -- net dob-network -- name dob-mysql -e MYSQL_ROOT_PASSWORD=12345 img-mysql]]></command>
+docker container run -d --name dob-mysql -e MYSQL_ROOT_PASSWORD=12345 img-mysql]]></command>
       </hudson.tasks.Shell>
    </builders>
    <publishers />
