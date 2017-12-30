@@ -25,23 +25,8 @@
     group: "{{ jenkins_process_group }}" 
     mode:  0644
 
-#~ - name: Turn on execute permission for jenkins-create-user.sh
-  #~ file: 
-    #~ path=/vagrant/jenkins-create-user.sh
-    #~ mode="a+x"
-
-#~ - name: Turn on execute permission for jenkins-add-node.sh
-  #~ file: 
-    #~ path=/vagrant/jenkins-add-node.sh
-    #~ mode="a+x"
-
-#~ - name: Turn on execute permission for jenkins-add-credentials.sh
-  #~ file: 
-    #~ path=/vagrant/jenkins-add-credentials.sh
-    #~ mode="a+x"
-
-- name: Create user {{ jenkins_admin_username }}
-  script: /vagrant/files/jenkins/jenkins-create-user.sh {{ jenkins_admin_username }} {{ jenkins_admin_password }} {{ jenkins_home }} {{ jenkins_process_user }} {{ jenkins_process_group }}
+- name: Create user {{ jenkins_admin_username }} with password {{ jenkins_admin_password }}
+  script: /vagrant/jenkins/jenkins-create-user.sh {{ jenkins_admin_username }} {{ jenkins_admin_password }} {{ jenkins_home }} {{ jenkins_process_user }} {{ jenkins_process_group }}
 
 - name: Create jenkins init script
   template: 
@@ -70,12 +55,12 @@
     name: "{{ item.key }}"
     with_dependencies: yes
     params:
-      timeout: 90.0
       url_username: "{{ jenkins_admin_username }}"
       url: http://localhost:8080
     url_password: "{{ jenkins_admin_password }}"
+    timeout: 90
   register: plugins_installed
-  with_dict: "{{ my_jenkins_plugins }}"
+  with_dict: "{{ jenkins_plugins }}"
   
 - name: Initiate the fact
   set_fact:
@@ -116,6 +101,12 @@
   retries: 5
   delay: 10
   check_mode: no
+
+- name: Add credentials to Jenkins
+  script: /vagrant/jenkins/jenkins-add-credentials.sh http://localhost:8080 {{ jenkins_admin_username }} {{ jenkins_admin_password }}
+
+- name: Add Jenkins slave node
+  script: /vagrant/jenkins/jenkins-add-node.sh http://localhost:8080 {{ jenkins_admin_username }} {{ jenkins_admin_password }} {{ jenkins_slave_host }} vagrant
 
 - name: Create Jenkins job
   jenkins_job:

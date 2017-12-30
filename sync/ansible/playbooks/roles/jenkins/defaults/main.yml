@@ -4,6 +4,16 @@ jenkins_admin_password: admin
 jenkins_process_user: jenkins
 jenkins_process_group: jenkins
 jenkins_jar_location: /opt/jenkins-cli.jar
+jenkins_slave_host: example.com
 jenkins_java_args:
   - "-Djava.awt.headless=true"
   - "-Djenkins.install.runSetupWizard=false"
+jenkins_plugins:
+  build-pipeline-plugin:
+    enabled: yes
+  ssh:
+    enabled: yes
+  log-parser:
+    enabled: yes
+  template-project:
+    enabled: yes

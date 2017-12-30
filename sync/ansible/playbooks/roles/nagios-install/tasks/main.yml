@@ -4,7 +4,7 @@
     name: httpd,nagios,nagios-plugins-all,nagios-plugins-nrpe
     state: present
 
-- name: Set password for {{ nagios_admin_username }}
+- name: Create user {{ nagios_admin_username }} with password {{ nagios_admin_password }}
   htpasswd:
     path: /etc/nagios/passwd
     name: "{{ nagios_admin_username }}"
@@ -12,7 +12,7 @@
 
 - name: Copy docker plugin
   copy: 
-    src=/vagrant/files/check_docker_container.sh
+    src=/vagrant/check_docker_container.sh
     dest=/usr/lib64/nagios/plugins/check_docker_container.sh
 
 - name: Turn on execute permission for docker plugin
@@ -25,11 +25,11 @@
     src={{ item }} 
     dest=/usr/share/nagios/html/images/logos/
   with_fileglob:
-    - /vagrant/files/nagios/logos/*.png
+    - /vagrant/nagios/logos/*.png
 
 - name: Copy localhost.cfg
   copy: 
-    src=/vagrant/files/nagios/localhost.cfg
+    src=/vagrant/nagios/localhost.cfg
     dest=/etc/nagios/objects/localhost.cfg
 
 - name: Copy additional config files
@@ -37,4 +37,4 @@
     src={{ item }} 
     dest=/etc/nagios/conf.d/
   with_fileglob:
-    - /vagrant/files/nagios/conf.d/*.cfg 
+    - /vagrant/nagios/conf.d/*.cfg 

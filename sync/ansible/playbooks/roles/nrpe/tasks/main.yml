@@ -6,7 +6,7 @@
 
 - name: Copy docker plugin
   copy: 
-    src=/vagrant/files/check_docker_container.sh
+    src=/vagrant/check_docker_container.sh
     dest=/usr/lib64/nagios/plugins/check_docker_container.sh
 
 - name: Turn on execute permission for docker plugin
@@ -29,12 +29,12 @@
 
 - name: Add nrpe to sudoers.d
   copy:
-    src=/vagrant/files/nrpe/nrpe.sudo
+    src=/vagrant/nrpe/nrpe.sudo
     dest=/etc/sudoers.d/nrpe
 
 - name: Add nagios to sudoers.d
   copy:
-    src=/vagrant/files/nrpe/nagios.sudo
+    src=/vagrant/nrpe/nagios.sudo
     dest=/etc/sudoers.d/nagios
 
 - name: Add nrpe user to docker group
