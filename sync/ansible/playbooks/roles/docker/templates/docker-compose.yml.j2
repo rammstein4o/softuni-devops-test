@@ -1,0 +1,29 @@
+version: "2.1"
+services:
+
+  mysql:
+    build:
+     context: www-dynamic/mysql
+     dockerfile: Dockerfile
+    container_name: dob-mysql
+    environment:
+     - MYSQL_ROOT_PASSWORD=12345
+    networks:
+      - dobnet
+
+  http:
+    build:
+     context: www-dynamic/php
+     dockerfile: Dockerfile
+    container_name: dob-http
+    ports:
+      - 80:80
+    volumes:
+     - ./www-dynamic/site:/var/www/html
+    links:
+     - "mysql:dob-mysql"
+    networks:
+      - dobnet
+
+networks:
+  dobnet:

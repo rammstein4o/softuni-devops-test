@@ -28,3 +28,24 @@
     name: vagrant
     groups: docker
     append: yes
+
+- name: Copy docker-compose
+  copy: 
+    src=/vagrant/docker/docker-compose.sh
+    dest=/usr/bin/docker-compose
+
+- name: Turn on execute permission for docker-compose
+  file: 
+    path=/usr/bin/docker-compose
+    mode="a+x"
+
+- name: Creates directory
+  file: path=/vagrant/dob state=directory
+
+- name: Create docker-compose.yml
+  template: 
+    src:   docker-compose.yml.j2
+    dest:  /vagrant/dob/docker-compose.yml
+    owner: vagrant 
+    group: vagrant 
+    mode:  0644

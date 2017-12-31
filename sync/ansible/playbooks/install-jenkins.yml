@@ -6,5 +6,4 @@
     - { role: firewall-open-port, port: 8080 }
     - git
     - java
-    #~ - reboot
     - jenkins

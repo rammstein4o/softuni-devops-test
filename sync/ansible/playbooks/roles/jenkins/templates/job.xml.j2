@@ -23,7 +23,11 @@
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
       <submoduleCfg class="list" />
-      <extensions />
+      <extensions>
+      <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+        <relativeTargetDir><![CDATA[www-dynamic]]></relativeTargetDir>
+      </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+    </extensions>
    </scm>
    <assignedNode>docker</assignedNode>
    <canRoam>false</canRoam>
@@ -37,23 +41,11 @@
     </hudson.triggers.SCMTrigger>
   </triggers>
    <concurrentBuild>false</concurrentBuild>
-   <customWorkspace><![CDATA[/vagrant/www-dynamic]]></customWorkspace>
+   <customWorkspace><![CDATA[/vagrant/dob]]></customWorkspace>
    <builders>
       <hudson.tasks.Shell>
-         <command><![CDATA[cd /vagrant/www-dynamic/php
-docker image build -t img-php .]]></command>
-      </hudson.tasks.Shell>
-      <hudson.tasks.Shell>
-         <command><![CDATA[cd /vagrant/www-dynamic/mysql
-docker image build -t img-mysql .]]></command>
-      </hudson.tasks.Shell>
-      <hudson.tasks.Shell>
-         <command><![CDATA[docker container rm -f dob-http || true
-docker container run -d -p 80:80 --name dob-http -v /vagrant/www-dynamic/site:/var/www/html img-php]]></command>
-      </hudson.tasks.Shell>
-      <hudson.tasks.Shell>
-         <command><![CDATA[docker container rm -f dob-mysql || true
-docker container run -d --name dob-mysql -e MYSQL_ROOT_PASSWORD=12345 img-mysql]]></command>
+         <command><![CDATA[cd /vagrant/dob
+docker-compose up -d --build --force]]></command>
       </hudson.tasks.Shell>
    </builders>
    <publishers />
